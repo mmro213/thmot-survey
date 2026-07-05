@@ -185,7 +185,7 @@ const PASSCODE = "MOTJun2026";
 /* ================= BACKEND: Google Sheets via Apps Script ================= */
 // 1. Deploy the companion Apps Script as a Web App (see setup guide).
 // 2. Paste the resulting /exec URL below.
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTZ0foTqvfD1TN_gCpMssLk3aqOcw1kUXSEAzola6S_imx3lwO9zDOUzwuoLf5_vuw4A/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzddYq5I-HvVv1cYjpjOOtsEjLBgwo5P2o6H41FQ00P2QLJg0eU8jkFNUATXf_TUHfRvQ/exec";
 
 async function apiGet(action){
   const res = await fetch(APPS_SCRIPT_URL + "?action=" + action);
@@ -591,7 +591,7 @@ document.getElementById("tabSup").onclick = ()=>{
   renderSupervisor();
 };
 
-if(APPS_SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbyTZ0foTqvfD1TN_gCpMssLk3aqOcw1kUXSEAzola6S_imx3lwO9zDOUzwuoLf5_vuw4A/exec")){
+if(APPS_SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbzddYq5I-HvVv1cYjpjOOtsEjLBgwo5P2o6H41FQ00P2QLJg0eU8jkFNUATXf_TUHfRvQ/exec")){
   document.getElementById("main").innerHTML = `<div class="hint" style="border-left-color:var(--orange);">⚠ Backend not configured. Open this file, find <code>APPS_SCRIPT_URL</code> near the top of the &lt;script&gt;, and paste your Google Apps Script Web App URL (see setup guide).</div>`;
 } else {
   renderField();
