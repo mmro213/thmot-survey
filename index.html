@@ -179,7 +179,7 @@ const MODULES = {
 };
 const MODULE_KEYS = Object.keys(MODULES);
 const CONDITIONS = ["Clear","Rain","Post-flood","Peak hour","Off-peak","Night","Event/closure"];
-const TIMEFRAMES = ["3 months","6 months","12 months","Post-Phase 1"];
+const TIMEFRAMES = ["Immediately","3 months","6 months","12 months","Post-Phase 1"];
 const PASSCODE = "MOTJun2026";
 
 /* ================= BACKEND: Google Sheets via Apps Script ================= */
@@ -189,8 +189,10 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzddYq5I-HvVv1c
 
 async function apiGet(action){
   const res = await fetch(APPS_SCRIPT_URL + "?action=" + action);
-  if(!res.ok) throw new Error("network");
-  return res.json();
+  const text = await res.text();
+  if(!res.ok){ console.error("apiGet failed", res.status, text.slice(0,300)); throw new Error("HTTP "+res.status); }
+  try{ return JSON.parse(text); }
+  catch(e){ console.error("apiGet non-JSON response (likely a login/redirect page):", text.slice(0,300)); throw new Error("bad response"); }
 }
 async function apiPost(payload){
   const res = await fetch(APPS_SCRIPT_URL, {
@@ -198,8 +200,10 @@ async function apiPost(payload){
     headers:{"Content-Type":"text/plain;charset=utf-8"}, // avoids CORS preflight on Apps Script
     body: JSON.stringify(payload)
   });
-  if(!res.ok) throw new Error("network");
-  return res.json();
+  const text = await res.text();
+  if(!res.ok){ console.error("apiPost failed", res.status, text.slice(0,300)); throw new Error("HTTP "+res.status); }
+  try{ return JSON.parse(text); }
+  catch(e){ console.error("apiPost non-JSON response (likely a login/redirect page):", text.slice(0,300)); throw new Error("bad response"); }
 }
 
 async function loadEntries(){
