@@ -215,11 +215,10 @@ async function loadCorridors(){
   try{
     const data = await apiGet("sites");
     return (data.sites && data.sites.length) ? data.sites : ["Site A"];
-  }catch(e){ return ["Site A"]; }
+  }catch(e){ toast("Couldn't reach the sheet — showing local list only"); return ["Site A"]; }
 }
 async function addCorridor(name){
   await apiPost({ type:"site", name: name });
-  return await loadCorridors();
 }
 
 /* ================= APP STATE ================= */
@@ -253,6 +252,12 @@ let corridorsCache = [];
 
 async function renderField(){
   corridorsCache = await loadCorridors();
+  if(state.corridor && !corridorsCache.includes(state.corridor)){
+    corridorsCache.push(state.corridor); // e.g. just-added site whose sheet write hasn't been read back yet
+  }
+  if(!state.corridor && corridorsCache.length){
+    state.corridor = corridorsCache[0];
+  }
   const main = document.getElementById("main");
   const mod = MODULES[state.module];
   const fill = chainFill();
@@ -288,6 +293,7 @@ async function renderField(){
           <div class="field"><label>Lat <span class="unit">(optional)</span></label><input type="text" id="latInput" value="${esc(state.lat)}"></div>
           <div class="field"><label>Lng <span class="unit">(optional)</span></label><input type="text" id="lngInput" value="${esc(state.lng)}"></div>
         </div>
+        <button type="button" class="btn ghost wide" id="gpsBtn" style="margin-bottom:14px;">📍 Use my current location</button>
         <div class="field">
           <label>What are you observing?</label>
           <div class="pillrow">
@@ -375,17 +381,43 @@ function wireField(){
   const $=id=>document.getElementById(id);
   $("corridorSel").onchange = async e=>{
     if(e.target.value==="__new__"){
-      const name = prompt("New site / corridor name:");
-      if(name && name.trim()){ await addCorridor(name.trim()); state.corridor=name.trim(); }
-      renderField();
-    } else { state.corridor = e.target.value; }
+      const name = (prompt("New site / corridor name:")||"").trim();
+      if(name){
+        state.corridor = name;
+        if(!corridorsCache.includes(name)) corridorsCache = [...corridorsCache, name];
+        renderField(); // re-render immediately with the optimistic list, don't wait on the network
+        try{ await addCorridor(name); } // sync to the sheet in the background
+        catch(err){ toast("Saved locally, but couldn't sync new site to the sheet"); }
+      } else {
+        renderField(); // user cancelled the prompt — re-render so the select falls back to a real site
+      }
+    } else { state.corridor = e.target.value; refreshChainOnly(); }
   };
-  if(!state.corridor && corridorsCache.length) state.corridor = corridorsCache[0];
-  $("locInput").oninput = e=> state.location = e.target.value;
-  $("surveyorInput").oninput = e=> state.surveyor = e.target.value;
+  $("locInput").oninput = e=>{ state.location = e.target.value; refreshChainOnly(); };
+  $("surveyorInput").oninput = e=>{ state.surveyor = e.target.value; refreshChainOnly(); };
   $("condSel").onchange = e=> state.condition = e.target.value;
   $("latInput").oninput = e=> state.lat = e.target.value;
   $("lngInput").oninput = e=> state.lng = e.target.value;
+  const gpsBtn = $("gpsBtn");
+  if(gpsBtn) gpsBtn.onclick = ()=>{
+    if(!navigator.geolocation){ toast("Geolocation not supported on this device"); return; }
+    gpsBtn.textContent = "Detecting…"; gpsBtn.disabled = true;
+    navigator.geolocation.getCurrentPosition(
+      pos=>{
+        state.lat = pos.coords.latitude.toFixed(6);
+        state.lng = pos.coords.longitude.toFixed(6);
+        $("latInput").value = state.lat;
+        $("lngInput").value = state.lng;
+        gpsBtn.textContent = "📍 Use my current location"; gpsBtn.disabled = false;
+        toast("Location detected");
+      },
+      err=>{
+        gpsBtn.textContent = "📍 Use my current location"; gpsBtn.disabled = false;
+        toast(err.code===1 ? "Location permission denied" : "Couldn't get location");
+      },
+      { enableHighAccuracy:true, timeout:10000 }
+    );
+  };
   document.querySelectorAll("[data-mod]").forEach(p=> p.onclick = ()=>{
     const same = state.module===p.dataset.mod;
     const surv=state.surveyor, corr=state.corridor, loc=state.location, cond=state.condition, lat=state.lat, lng=state.lng;
