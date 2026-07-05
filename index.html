@@ -185,14 +185,24 @@ const PASSCODE = "MOTJun2026";
 /* ================= BACKEND: Google Sheets via Apps Script ================= */
 // 1. Deploy the companion Apps Script as a Web App (see setup guide).
 // 2. Paste the resulting /exec URL below.
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzo9Mndn06rbDymPeIJCSRLzn0tza7ijNWjNxJbG-w2HJtzdZEGtdZZQefp-C8AAbDbfA/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyhJTErvwWAkUeW2AjKiZ2QWQ9fohowDh6rMRg79zmDVY-E3uBghiFm2m29Sgsp8Yqrcg/exec";
 
+function jsonp(url){
+  return new Promise((resolve,reject)=>{
+    const cbName = "jsonp_cb_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+    const script = document.createElement("script");
+    const timer = setTimeout(()=>{ cleanup(); reject(new Error("timeout")); }, 10000);
+    function cleanup(){ delete window[cbName]; script.remove(); clearTimeout(timer); }
+    window[cbName] = (data)=>{ cleanup(); resolve(data); };
+    script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cbName;
+    script.onerror = ()=>{ cleanup(); reject(new Error("script load error")); };
+    document.body.appendChild(script);
+  });
+}
 async function apiGet(action){
-  const res = await fetch(APPS_SCRIPT_URL + "?action=" + action);
-  const text = await res.text();
-  if(!res.ok){ console.error("apiGet failed", res.status, text.slice(0,300)); throw new Error("HTTP "+res.status); }
-  try{ return JSON.parse(text); }
-  catch(e){ console.error("apiGet non-JSON response (likely a login/redirect page):", text.slice(0,300)); throw new Error("bad response"); }
+  // JSONP instead of fetch: a <script> tag isn't subject to CORS, so this
+  // reliably reads data back even when a plain fetch() GET gets blocked.
+  return jsonp(APPS_SCRIPT_URL + "?action=" + action);
 }
 async function apiPost(payload){
   // Writes were reaching the sheet fine, but the browser blocked reading the
