@@ -591,7 +591,7 @@ document.getElementById("tabSup").onclick = ()=>{
   renderSupervisor();
 };
 
-if(APPS_SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbzddYq5I-HvVv1cYjpjOOtsEjLBgwo5P2o6H41FQ00P2QLJg0eU8jkFNUATXf_TUHfRvQ/exec")){
+if(APPS_SCRIPT_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")){
   document.getElementById("main").innerHTML = `<div class="hint" style="border-left-color:var(--orange);">⚠ Backend not configured. Open this file, find <code>APPS_SCRIPT_URL</code> near the top of the &lt;script&gt;, and paste your Google Apps Script Web App URL (see setup guide).</div>`;
 } else {
   renderField();
