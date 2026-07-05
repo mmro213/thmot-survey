@@ -3,669 +3,566 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Bangkok Transport Survey · MOT 2026</title>
+<title>Mobility Evidence Survey · Phase 0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#1e3a5f;--amber:#f59e0b;--red:#ef4444;--green:#16a34a;--slate:#64748b;--light:#f1f5f9;--border:#e2e8f0;--radius:8px;}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--light);color:#1e293b;min-height:100vh;}
-input,select,textarea{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:inherit;background:#fff;outline:none;transition:border-color .15s;}
-input:focus,select:focus,textarea:focus{border-color:var(--navy);}
-textarea{min-height:60px;resize:vertical;}
-.lbl{display:block;font-size:11px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
-.req{color:var(--red);}
-.field{margin-bottom:12px;}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.hdr{background:var(--navy);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50;}
-.hdr-back{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:0;}
-.hdr-sub{font-size:10px;opacity:.65;text-transform:uppercase;letter-spacing:.07em;}
-.hdr-title{font-size:16px;font-weight:800;}
-.ctx{background:#fff;border-bottom:1px solid var(--border);padding:8px 16px;font-size:12px;color:var(--slate);}
-.card{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:14px;}
-.btn{border:none;border-radius:var(--radius);padding:11px 14px;font-size:14px;font-weight:700;cursor:pointer;}
-.btn:active{opacity:.8;}
-.btn-navy{background:var(--navy);color:#fff;}
-.btn-amber{background:var(--amber);color:#fff;}
-.btn-slate{background:var(--slate);color:#fff;}
-.btn-red{background:var(--red);color:#fff;}
-.btn-green{background:var(--green);color:#fff;}
-.btn-ghost{background:var(--light);color:var(--navy);border:1.5px solid var(--border);}
-.btn-full{width:100%;display:block;}
-.btn-row{display:flex;gap:10px;margin-top:10px;}
-.btn-row .btn{flex:1;}
-.mod-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.mod-card{background:#fff;border:2px solid var(--border);border-radius:10px;padding:14px 10px;cursor:pointer;text-align:left;transition:border-color .2s;}
-.mod-card:hover,.mod-card:active{border-color:var(--amber);}
-.mod-icon{font-size:24px;margin-bottom:5px;}
-.mod-label{font-size:11px;font-weight:800;color:var(--navy);line-height:1.3;}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 22px;border-radius:20px;font-weight:700;font-size:14px;display:none;z-index:999;text-align:center;max-width:90%;}
-.tbl-wrap{overflow-x:auto;margin-top:10px;}
-table{border-collapse:collapse;width:100%;font-size:12px;}
-th{background:var(--navy);color:#fff;padding:8px 10px;text-align:left;white-space:nowrap;}
-td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:top;}
-tr:nth-child(even) td{background:#f8fafc;}
-.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;background:var(--light);color:var(--navy);}
-.badge-red{background:#fee2e2;color:var(--red);}
-.badge-amber{background:#fef3c7;color:#92400e;}
-.badge-green{background:#dcfce7;color:#166534;}
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
-.stat-box{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px;text-align:center;}
-.stat-num{font-size:26px;font-weight:900;color:var(--navy);}
-.stat-lbl{font-size:10px;color:var(--slate);margin-top:2px;}
-.chk-group label{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:14px;cursor:pointer;}
-.chk-group input{width:auto;accent-color:var(--navy);}
-.page{display:none;max-width:480px;margin:0 auto;padding-bottom:30px;}
-.page.active{display:block;}
-.pad{padding:16px;}
-.spinner{display:inline-block;width:16px;height:16px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.gps-status{font-size:12px;color:var(--slate);margin-bottom:8px;min-height:18px;}
-
-/* PRINT */
-@media print{
-  .no-print{display:none!important;}
-  body{background:#fff;}
-  .page{display:none!important;}
-  #page-print{display:block!important;max-width:100%;}
-  .hdr{background:#1e3a5f!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  .ps{page-break-inside:avoid;margin-bottom:16px;border:1px solid #ccc;padding:10px;border-radius:4px;}
-  .pl{border-bottom:1px solid #000;min-height:20px;margin-top:3px;}
-  .pg{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .pc{display:flex;align-items:center;gap:5px;margin-bottom:3px;font-size:11px;}
-  .pb{width:11px;height:11px;border:1.5px solid #000;display:inline-block;flex-shrink:0;}
-  .pf{margin-bottom:8px;}
-  .pt{font-size:10px;font-weight:700;text-transform:uppercase;}
+:root{
+  --ink:#22282b;
+  --paper:#f4f1ea;
+  --paper2:#ece7db;
+  --blue:#1c3d52;
+  --blue2:#2f5a74;
+  --teal:#4d8288;
+  --orange:#e2632c;
+  --line:#c9c2ae;
+  --ok:#3f7a4e;
+  --white:#fffdf8;
 }
-.print-only{display:none;}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:'IBM Plex Mono',monospace;}
+h1,h2,h3,.disp{font-family:'Space Grotesk',sans-serif;}
+::selection{background:var(--orange);color:#fff;}
+:focus-visible{outline:2px solid var(--orange);outline-offset:2px;}
+button,select,input,textarea{font-family:inherit;}
+
+/* ---------- shell ---------- */
+.shell{max-width:640px;margin:0 auto;min-height:100vh;background:var(--white);border-left:1px solid var(--line);border-right:1px solid var(--line);}
+header{background:var(--blue);color:var(--white);padding:18px 20px 14px;position:sticky;top:0;z-index:20;}
+header .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#a9c3cf;margin-bottom:4px;}
+header h1{font-size:19px;margin:0 0 2px;font-weight:700;letter-spacing:-.01em;}
+header .sub{font-size:11.5px;color:#c7d6dc;}
+.modeToggle{display:flex;margin-top:14px;background:rgba(255,255,255,.08);border-radius:8px;padding:3px;gap:3px;}
+.modeToggle button{flex:1;border:none;background:transparent;color:#cfe0e6;padding:8px 6px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.02em;}
+.modeToggle button.active{background:var(--orange);color:#fff;}
+
+main{padding:16px 18px 60px;}
+.hint{font-size:11.5px;color:#6b6255;line-height:1.5;margin:0 0 16px;padding:10px 12px;background:var(--paper2);border-left:3px solid var(--teal);border-radius:2px;}
+
+/* ---------- stepper ---------- */
+.chain{display:flex;align-items:center;gap:0;margin:0 0 18px;}
+.chain .node{flex:1;text-align:center;}
+.chain .dot{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);background:var(--white);color:var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin:0 auto 5px;transition:all .2s;}
+.chain .dot.filled{background:var(--ok);border-color:var(--ok);color:#fff;}
+.chain .lbl{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:#8a8171;}
+.chain .bar{position:relative;top:-16px;height:2px;background:var(--line);flex:0 0 auto;width:14%;}
+.chain .bar.filled{background:var(--ok);}
+
+/* ---------- sections ---------- */
+.card{border:1px solid var(--line);border-radius:6px;margin-bottom:14px;overflow:hidden;}
+.card .head{background:var(--paper2);padding:9px 13px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--blue);display:flex;align-items:center;gap:7px;}
+.card .head .n{width:18px;height:18px;border-radius:4px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;}
+.card .body{padding:13px;}
+.field{margin-bottom:12px;}
+.field:last-child{margin-bottom:0;}
+label{display:block;font-size:11.5px;color:#524a3e;margin-bottom:5px;font-weight:600;}
+.unit{color:#9a917f;font-weight:400;}
+input[type=text],input[type=number],select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:5px;background:var(--white);font-size:14px;color:var(--ink);}
+textarea{resize:vertical;min-height:54px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.chk{display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:13px;border-bottom:1px dashed #e3ddcd;cursor:pointer;}
+.chk:last-child{border-bottom:none;}
+.chk input{margin-top:3px;accent-color:var(--orange);}
+.pillrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
+.pill{border:1px solid var(--line);background:var(--white);border-radius:20px;padding:5px 11px;font-size:11.5px;cursor:pointer;color:#5c5646;}
+.pill.sel{background:var(--orange);color:#fff;border-color:var(--orange);}
+
+.btnRow{display:flex;gap:10px;margin-top:6px;}
+.btn{flex:1;padding:13px;border-radius:6px;border:none;font-weight:700;font-size:13.5px;cursor:pointer;letter-spacing:.02em;}
+.btn.primary{background:var(--orange);color:#fff;}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:#5c5646;}
+.btn.wide{width:100%;}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;padding:11px 18px;border-radius:7px;font-size:13px;box-shadow:0 6px 20px rgba(0,0,0,.2);z-index:99;opacity:0;pointer-events:none;transition:opacity .25s, transform .25s;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px);}
+
+/* ---------- supervisor ---------- */
+.gate{padding:60px 20px;text-align:center;}
+.gate input{max-width:200px;margin:14px auto;text-align:center;letter-spacing:.2em;}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.stat{border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--paper2);}
+.stat .num{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--blue);}
+.stat .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:#7a715f;}
+.barchart .brow{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:11.5px;}
+.barchart .bname{width:118px;flex-shrink:0;color:#5c5646;}
+.barchart .btrack{flex:1;height:14px;background:var(--paper2);border-radius:3px;overflow:hidden;}
+.barchart .bfill{height:100%;background:var(--teal);}
+.barchart .bnum{width:26px;text-align:right;color:#8a8171;}
+
+.filterRow{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.filterRow select{width:auto;flex:1;font-size:12px;padding:7px 8px;}
+.reclist{display:flex;flex-direction:column;gap:8px;}
+.rec{border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:12px;}
+.rec .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.rec .mod{font-weight:700;color:var(--blue);}
+.rec .flag{font-size:10px;background:#f6d9c9;color:#a24817;padding:2px 7px;border-radius:10px;font-weight:700;}
+.rec .flag.ok{background:#d7ead9;color:#2c5c37;}
+.rec .meta{color:#8a8171;font-size:11px;}
+
+section.hidden{display:none;}
 </style>
 </head>
 <body>
-
-<!-- ── HOME ─────────────────────────────────────────────── -->
-<div id="page-home" class="page active">
-  <div class="hdr no-print">
-    <div>
-      <div class="hdr-sub">Bangkok Transport Survey · MOT 2026</div>
-      <div class="hdr-title">Field Data Collection</div>
+<div class="shell">
+  <header>
+    <div class="eyebrow">Phase 0 · Field Evidence</div>
+    <h1>Mobility Evidence Survey</h1>
+    <div class="sub">Every question feeds one of: Problem → Cause → Solution → Metric</div>
+    <div class="modeToggle">
+      <button id="tabField" class="active">Field entry</button>
+      <button id="tabSup">Supervisor</button>
     </div>
-  </div>
-  <div class="pad">
-    <div class="card" style="margin-bottom:14px;">
-      <div class="field">
-        <label class="lbl">Corridor <span class="req">*</span></label>
-        <select id="h-corridor">
-          <option value="">Select corridor</option>
-          <option>Sathorn</option><option>Rama IV</option>
-          <option>Asoke</option><option>Sukhumvit</option>
-        </select>
-      </div>
-      <div class="row2">
-        <div class="field">
-          <label class="lbl">Surveyor ID <span class="req">*</span></label>
-          <input id="h-sid" placeholder="e.g. STU-01">
-        </div>
-        <div class="field">
-          <label class="lbl">Date</label>
-          <input id="h-date" type="date">
-        </div>
-      </div>
-    </div>
-    <div class="lbl" style="margin-bottom:8px;">Select Survey Module</div>
-    <div class="mod-grid" style="margin-bottom:16px;">
-      <button class="mod-card" onclick="openModule('gps')"><div class="mod-icon">📍</div><div class="mod-label">A · GPS Intersection</div></button>
-      <button class="mod-card" onclick="openModule('bus')"><div class="mod-icon">🚌</div><div class="mod-label">B · Bus Stop Inventory</div></button>
-      <button class="mod-card" onclick="openModule('bts')"><div class="mod-icon">🚇</div><div class="mod-label">C · BTS/MRT Entrance</div></button>
-      <button class="mod-card" onclick="openModule('flood')"><div class="mod-icon">🌊</div><div class="mod-label">D · Flood-Risk Survey</div></button>
-      <button class="mod-card" onclick="openModule('cctv')"><div class="mod-icon">📷</div><div class="mod-label">E · CCTV / Signal Cabinet</div></button>
-      <button class="mod-card" onclick="openModule('gis')"><div class="mod-icon">🗺️</div><div class="mod-label">F · GIS / General Note</div></button>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-amber" onclick="showPage('page-login')">🔐 Supervisor View</button>
-      <button class="btn btn-ghost" onclick="showPage('page-print')">🖨️ Print Sheet</button>
-    </div>
-  </div>
+  </header>
+  <main id="main"></main>
 </div>
-
-<!-- ── FORM ──────────────────────────────────────────────── -->
-<div id="page-form" class="page">
-  <div class="hdr no-print">
-    <button class="hdr-back" onclick="showPage('page-home')">←</button>
-    <div>
-      <div class="hdr-sub" id="form-module-label"></div>
-      <div class="hdr-title">New Entry</div>
-    </div>
-  </div>
-  <div class="ctx no-print" id="form-ctx"></div>
-  <div class="pad">
-    <div id="form-body"></div>
-    <div class="btn-row">
-      <button class="btn btn-slate" onclick="showPage('page-home')">Cancel</button>
-      <button class="btn btn-navy" id="submit-btn" onclick="submitForm()">✅ Submit Entry</button>
-    </div>
-    <div id="submit-status" style="margin-top:10px;font-size:13px;text-align:center;color:var(--slate);"></div>
-  </div>
-</div>
-
-<!-- ── SUPERVISOR LOGIN ───────────────────────────────────── -->
-<div id="page-login" class="page">
-  <div class="hdr no-print">
-    <button class="hdr-back" onclick="showPage('page-home')">←</button>
-    <div><div class="hdr-sub">Restricted</div><div class="hdr-title">Supervisor Login</div></div>
-  </div>
-  <div class="pad">
-    <div class="card">
-      <div class="field">
-        <label class="lbl">Password</label>
-        <input id="sv-pw" type="password" placeholder="Enter supervisor password" onkeydown="if(event.key==='Enter')supervisorLogin()">
-      </div>
-      <button class="btn btn-navy btn-full" onclick="supervisorLogin()">🔐 Login</button>
-      <div id="login-err" style="color:var(--red);margin-top:8px;font-size:13px;text-align:center;"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ── SUPERVISOR DASHBOARD ───────────────────────────────── -->
-<div id="page-supervisor" class="page">
-  <div class="hdr no-print">
-    <button class="hdr-back" onclick="showPage('page-home')">←</button>
-    <div><div class="hdr-sub">Live · All Students' Data</div><div class="hdr-title">Supervisor Dashboard</div></div>
-  </div>
-  <div class="pad">
-    <div id="sv-loading" style="text-align:center;padding:30px;color:var(--slate);">Loading data…</div>
-    <div id="sv-content" style="display:none;">
-      <div class="stat-grid" id="sv-stats"></div>
-      <div class="btn-row" style="margin-bottom:14px;">
-        <button class="btn btn-green" onclick="exportCSV()">⬇️ Export CSV</button>
-        <button class="btn btn-amber" onclick="loadSupervisor()">🔄 Refresh</button>
-      </div>
-      <div class="field">
-        <label class="lbl">Filter by Corridor</label>
-        <select id="sv-filter" onchange="renderTable()">
-          <option value="">All corridors</option>
-          <option>Sathorn</option><option>Rama IV</option><option>Asoke</option><option>Sukhumvit</option>
-        </select>
-      </div>
-      <div class="tbl-wrap" id="sv-table"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ── PRINT SHEET ────────────────────────────────────────── -->
-<div id="page-print" class="page">
-  <div class="hdr no-print">
-    <button class="hdr-back" onclick="showPage('page-home')">←</button>
-    <div><div class="hdr-sub">Offline Backup</div><div class="hdr-title">Printable Survey Sheet</div></div>
-  </div>
-  <div class="pad no-print">
-    <button class="btn btn-navy btn-full" onclick="window.print()">🖨️ Print / Save as PDF</button>
-    <p style="font-size:12px;color:var(--slate);margin-top:8px;text-align:center;">All 6 modules on one sheet. Use when no signal.</p>
-  </div>
-  <div style="padding:16px;">
-    <div style="text-align:center;margin-bottom:12px;">
-      <div style="font-size:17px;font-weight:900;color:#1e3a5f;">Bangkok Corridor Transport Survey</div>
-      <div style="font-size:11px;color:#64748b;">Ministry of Transport · Field Data Collection 2026</div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;">
-      <div class="pf"><div class="pt">Surveyor ID</div><div class="pl"></div></div>
-      <div class="pf"><div class="pt">Date</div><div class="pl"></div></div>
-      <div class="pf"><div class="pt">Corridor</div>
-        <div style="margin-top:3px;font-size:11px;">
-          <div class="pc"><span class="pb"></span>Sathorn</div>
-          <div class="pc"><span class="pb"></span>Rama IV</div>
-          <div class="pc"><span class="pb"></span>Asoke</div>
-          <div class="pc"><span class="pb"></span>Sukhumvit</div>
-        </div>
-      </div>
-    </div>
-    <!-- A -->
-    <div class="ps"><div style="font-weight:900;font-size:12px;margin-bottom:8px;color:#1e3a5f;">📍 A · GPS Intersection</div>
-      <div class="pg">
-        <div class="pf"><div class="pt">Intersection Name *</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Latitude</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Longitude</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Signal Phases (#)</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Pedestrian Crossing</div>
-          <div class="pc"><span class="pb"></span>Yes-marked</div><div class="pc"><span class="pb"></span>Yes-unmarked</div><div class="pc"><span class="pb"></span>No</div>
-        </div>
-        <div class="pf"><div class="pt">Congestion</div>
-          <div class="pc"><span class="pb"></span>Free</div><div class="pc"><span class="pb"></span>Moderate</div><div class="pc"><span class="pb"></span>Heavy</div><div class="pc"><span class="pb"></span>Gridlock</div>
-        </div>
-      </div>
-      <div class="pf"><div class="pt">Remarks / OSM</div><div class="pl"></div><div class="pl" style="margin-top:4px;"></div></div>
-    </div>
-    <!-- B -->
-    <div class="ps"><div style="font-weight:900;font-size:12px;margin-bottom:8px;color:#1e3a5f;">🚌 B · Bus Stop Inventory</div>
-      <div class="pg">
-        <div class="pf"><div class="pt">Stop ID / Name *</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Stop Count (#)</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Shelter</div>
-          <div class="pc"><span class="pb"></span>Good</div><div class="pc"><span class="pb"></span>Damaged</div><div class="pc"><span class="pb"></span>None</div>
-        </div>
-        <div class="pf"><div class="pt">Seating Condition</div>
-          <div class="pc"><span class="pb"></span>Good</div><div class="pc"><span class="pb"></span>Fair</div><div class="pc"><span class="pb"></span>Poor</div><div class="pc"><span class="pb"></span>Missing</div>
-        </div>
-        <div class="pf"><div class="pt">Route Numbers</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Wheelchair Access</div>
-          <div class="pc"><span class="pb"></span>Yes</div><div class="pc"><span class="pb"></span>Partial</div><div class="pc"><span class="pb"></span>No</div>
-        </div>
-      </div>
-      <div class="pf"><div class="pt">Remarks</div><div class="pl"></div></div>
-    </div>
-    <!-- C -->
-    <div class="ps"><div style="font-weight:900;font-size:12px;margin-bottom:8px;color:#1e3a5f;">🚇 C · BTS/MRT Entrance</div>
-      <div class="pg">
-        <div class="pf"><div class="pt">Station Name *</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Type</div>
-          <div class="pc"><span class="pb"></span>BTS</div><div class="pc"><span class="pb"></span>MRT</div><div class="pc"><span class="pb"></span>BRT</div><div class="pc"><span class="pb"></span>Interchange</div>
-        </div>
-        <div class="pf"><div class="pt">Entrances (#)</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">OSM Verified?</div>
-          <div class="pc"><span class="pb"></span>Match</div><div class="pc"><span class="pb"></span>Discrepancy</div><div class="pc"><span class="pb"></span>Unchecked</div>
-        </div>
-        <div class="pf"><div class="pt">Interchange Routes</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Last-mile Connection</div><div class="pl"></div></div>
-      </div>
-      <div class="pf"><div class="pt">Remarks</div><div class="pl"></div></div>
-    </div>
-    <!-- D -->
-    <div class="ps"><div style="font-weight:900;font-size:12px;margin-bottom:8px;color:#1e3a5f;">🌊 D · Flood-Risk Survey</div>
-      <div class="pg">
-        <div class="pf"><div class="pt">Location Description *</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Severity Score</div>
-          <div class="pc"><span class="pb"></span>Low</div><div class="pc"><span class="pb"></span>Medium</div><div class="pc"><span class="pb"></span>High</div><div class="pc"><span class="pb"></span>Critical</div>
-        </div>
-      </div>
-      <div class="pf"><div class="pt">Evidence (tick all)</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:3px;">
-          <div class="pc"><span class="pb"></span>Water stains</div>
-          <div class="pc"><span class="pb"></span>Drain blockage</div>
-          <div class="pc"><span class="pb"></span>Subsidence</div>
-          <div class="pc"><span class="pb"></span>Resident report</div>
-          <div class="pc"><span class="pb"></span>Standing water</div>
-        </div>
-      </div>
-      <div class="pg" style="margin-top:6px;">
-        <div class="pf"><div class="pt">Resident Interviews (#)</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Drainage</div>
-          <div class="pc"><span class="pb"></span>Clear</div><div class="pc"><span class="pb"></span>Blocked</div><div class="pc"><span class="pb"></span>Absent</div>
-        </div>
-      </div>
-      <div class="pf"><div class="pt">Recommended Action</div><div class="pl"></div><div class="pl" style="margin-top:4px;"></div></div>
-    </div>
-    <!-- E -->
-    <div class="ps"><div style="font-weight:900;font-size:12px;margin-bottom:8px;color:#1e3a5f;">📷 E · CCTV / Signal Cabinet</div>
-      <div class="pg">
-        <div class="pf"><div class="pt">Location / Pole ID *</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Type</div>
-          <div class="pc"><span class="pb"></span>CCTV</div><div class="pc"><span class="pb"></span>Signal cabinet</div><div class="pc"><span class="pb"></span>Both</div>
-        </div>
-        <div class="pf"><div class="pt">Condition</div>
-          <div class="pc"><span class="pb"></span>Good</div><div class="pc"><span class="pb"></span>Fair</div><div class="pc"><span class="pb"></span>Poor</div><div class="pc"><span class="pb"></span>Damaged</div>
-        </div>
-        <div class="pf"><div class="pt">Coverage</div>
-          <div class="pc"><span class="pb"></span>Full</div><div class="pc"><span class="pb"></span>Partial</div><div class="pc"><span class="pb"></span>Blocked</div>
-        </div>
-        <div class="pf"><div class="pt">Units Visible (#)</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Photo Taken?</div>
-          <div class="pc"><span class="pb"></span>Yes</div><div class="pc"><span class="pb"></span>No</div><div class="pc"><span class="pb"></span>Obstructed</div>
-        </div>
-      </div>
-    </div>
-    <!-- F -->
-    <div class="ps"><div style="font-weight:900;font-size:12px;margin-bottom:8px;color:#1e3a5f;">🗺️ F · GIS / General Note</div>
-      <div class="pg">
-        <div class="pf"><div class="pt">Feature Name *</div><div class="pl"></div></div>
-        <div class="pf"><div class="pt">Feature Type</div>
-          <div class="pc"><span class="pb"></span>Intersection</div><div class="pc"><span class="pb"></span>U-turn</div><div class="pc"><span class="pb"></span>Signage</div><div class="pc"><span class="pb"></span>Other</div>
-        </div>
-        <div class="pf"><div class="pt">Map Accuracy</div>
-          <div class="pc"><span class="pb"></span>Accurate</div><div class="pc"><span class="pb"></span>Minor error</div><div class="pc"><span class="pb"></span>Major error</div><div class="pc"><span class="pb"></span>Not on map</div>
-        </div>
-      </div>
-      <div class="pf"><div class="pt">Correction / Remarks</div><div class="pl"></div><div class="pl" style="margin-top:4px;"></div></div>
-    </div>
-    <div style="text-align:center;font-size:10px;color:#94a3b8;margin-top:6px;">Transfer to digital form at end of day · Bangkok MOT Survey 2026</div>
-  </div>
-  <div class="pad no-print"><button class="btn btn-ghost btn-full" onclick="showPage('page-home')">← Back</button></div>
-</div>
-
-<div id="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════════════
-// ⚠️  PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW
-// ══════════════════════════════════════════════════════════
-//const SHEET_URL = "https://script.google.com/macros/s/AKfycbyD3-8TjXIUCxihOmHqRPfNCGSxhKvHVDpgnzhSK3tx-arTW2ktnHSmeCScmGfeJOv0_Q/exec";
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbyuAzbxfcWrmZ0xtXLj0eR_WGBXuBIIlLlJbvOjWhfR2BqIbGFvQjkEwpWOFfdc-qmLIw/exec";
-// ══════════════════════════════════════════════════════════
-const SV_PASSWORD = "MOTJun2026"; // Change this before sharing
-
-// ── INIT ──────────────────────────────────────────────────
-document.getElementById("h-date").value = new Date().toISOString().slice(0,10);
-
-function showPage(id){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-  window.scrollTo(0,0);
-}
-
-function toast(msg,dur=2800){
-  const t=document.getElementById("toast");
-  t.textContent=msg;t.style.display="block";
-  setTimeout(()=>t.style.display="none",dur);
-}
-
-// ── MODULE DEFINITIONS ────────────────────────────────────
+/* ================= CONFIG ================= */
 const MODULES = {
-  gps:{label:"📍 A · GPS Intersection",html:`
-    <div class="field"><label class="lbl">Intersection Name <span class="req">*</span></label><input id="f-name" placeholder="e.g. Sathorn × Silom"></div>
-    <div class="gps-status" id="gps-status">📡 Capturing GPS…</div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Latitude</label><input id="f-lat" placeholder="13.XXXXXX"></div>
-      <div class="field"><label class="lbl">Longitude</label><input id="f-lng" placeholder="100.XXXXXX"></div>
-    </div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Signal Phases (#)</label><input id="f-phases" type="number" placeholder="e.g. 4"></div>
-      <div class="field"><label class="lbl">Congestion</label>
-        <select id="f-congestion"><option value="">Select</option><option>Free flow</option><option>Moderate</option><option>Heavy</option><option>Gridlock</option></select>
+  junction:{ label:"Junction / Signal",
+    problem:[
+      {id:"delay",label:"Average vehicle delay",unit:"sec/veh",type:"number"},
+      {id:"queue",label:"Max queue length observed",unit:"m",type:"number"},
+      {id:"incidents",label:"Recorded incidents/near-miss (30d)",unit:"count",type:"number"}],
+    causes:["Signal timing / phasing","Illegal parking blocking lane","Pedestrian crossing conflict","Road geometry constraint","Loading/unloading activity","Bus stop too close to junction","Flooding / drainage"],
+    solutions:["Signal re-timing / coordination","Additional turn lane","Parking enforcement","Crossing redesign","Geometric redesign","Relocate nearby bus stop","Enforcement camera"],
+    metricHint:"e.g. −20% avg delay, −15m queue length" },
+  bus:{ label:"Bus Stop / Route",
+    problem:[
+      {id:"dwell",label:"Average dwell time",unit:"sec",type:"number"},
+      {id:"otp",label:"On-time performance",unit:"%",type:"number"},
+      {id:"bunch",label:"Bunching events observed (peak hr)",unit:"count",type:"number"}],
+    causes:["Poor stop location / access","No bus priority lane","Illegal parking at stop","Signal conflict on approach","Insufficient shelter/capacity","Overlapping/duplicate routes"],
+    solutions:["Relocate stop","Bus priority lane or signal","Enforcement at stop","Shelter/capacity upgrade","Route rationalisation"],
+    metricHint:"e.g. +10% on-time performance, −20s dwell" },
+  ped:{ label:"Pedestrian / Crossing",
+    problem:[
+      {id:"unsafe",label:"Unsafe/illegal crossings observed (1hr)",unit:"count",type:"number"},
+      {id:"crosstime",label:"Effective crossing time available",unit:"sec",type:"number"},
+      {id:"volume",label:"Pedestrian volume vs facility capacity",unit:"ratio",type:"text"}],
+    causes:["No / inadequate crossing facility","Crossing distance too long","Poor visibility / lighting","Vehicle movement given priority","No dedicated pedestrian signal phase"],
+    solutions:["New or upgraded crossing","Add pedestrian signal phase","Refuge island","Footbridge / underpass","Lighting improvement"],
+    metricHint:"e.g. −30% unsafe crossings, +8s ped phase" },
+  curb:{ label:"Parking / Loading / Curbside",
+    problem:[
+      {id:"illegal",label:"Illegally parked vehicles observed",unit:"count",type:"number"},
+      {id:"loadtime",label:"Avg loading/unloading duration",unit:"min",type:"number"},
+      {id:"occupancy",label:"Curb occupancy rate",unit:"%",type:"number"}],
+    causes:["No designated loading zone","Weak / no enforcement","Demand exceeds curb supply","Peak-hour conflict with traffic"],
+    solutions:["Designated loading bay","Enforcement / CCTV at curb","Time-based restriction","Off-street loading facility"],
+    metricHint:"e.g. +25% curb compliance rate" },
+  flood:{ label:"Drainage / Flood",
+    problem:[
+      {id:"depth",label:"Max flood depth observed",unit:"cm",type:"number"},
+      {id:"duration",label:"Flood duration",unit:"min",type:"number"},
+      {id:"closure",label:"Road closure / disruption time",unit:"hr",type:"number"}],
+    causes:["Insufficient drain capacity","Blocked / silted drainage","Low elevation or geometry","Pump station failure","Debris / waste blockage"],
+    solutions:["Drain capacity upgrade","Pump installation","Clearing / maintenance program","Road elevation adjustment","Early warning / sensor system"],
+    metricHint:"e.g. −40 min recovery time, −15cm peak depth" },
+  asset:{ label:"Road Geometry / Asset",
+    problem:[
+      {id:"condition",label:"Pavement/asset condition rating",unit:"1-5",type:"number"},
+      {id:"complaints",label:"Public complaints logged (90d)",unit:"count",type:"number"}],
+    causes:["Poor original design","Deterioration / lack of maintenance","Physical obstruction","Inadequate signage or markings"],
+    solutions:["Repaving / resurfacing","Geometric redesign","Obstruction removal","Signage & marking renewal"],
+    metricHint:"e.g. condition index 2→4, −30% complaints" },
+  cctv:{ label:"CCTV / Monitoring / Response",
+    problem:[
+      {id:"coverage",label:"Estimated camera coverage",unit:"%",type:"number"},
+      {id:"detect",label:"Incident detection time",unit:"min",type:"number"},
+      {id:"blind",label:"Blind spots identified",unit:"count",type:"number"}],
+    causes:["No camera coverage","Poor angle / maintenance","No integration with control centre","Monitoring staffing gap"],
+    solutions:["New CCTV installation","Camera relocation / upgrade","Integrate to command centre","Add monitoring staff/shift"],
+    metricHint:"e.g. coverage 60%→90%, −5min detection time" }
+};
+const MODULE_KEYS = Object.keys(MODULES);
+const CONDITIONS = ["Clear","Rain","Post-flood","Peak hour","Off-peak","Night","Event/closure"];
+const TIMEFRAMES = ["3 months","6 months","12 months","Post-Phase 1"];
+const PASSCODE = "MOTJun2026";
+
+/* ================= BACKEND: Google Sheets via Apps Script ================= */
+// 1. Deploy the companion Apps Script as a Web App (see setup guide).
+// 2. Paste the resulting /exec URL below.
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTZ0foTqvfD1TN_gCpMssLk3aqOcw1kUXSEAzola6S_imx3lwO9zDOUzwuoLf5_vuw4A/exec";
+
+async function apiGet(action){
+  const res = await fetch(APPS_SCRIPT_URL + "?action=" + action);
+  if(!res.ok) throw new Error("network");
+  return res.json();
+}
+async function apiPost(payload){
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method:"POST",
+    headers:{"Content-Type":"text/plain;charset=utf-8"}, // avoids CORS preflight on Apps Script
+    body: JSON.stringify(payload)
+  });
+  if(!res.ok) throw new Error("network");
+  return res.json();
+}
+
+async function loadEntries(){
+  try{
+    const data = await apiGet("entries");
+    return (data.entries||[]).sort((a,b)=> b.ts - a.ts);
+  }catch(e){ toast("Couldn't reach the sheet — check connection"); return []; }
+}
+async function saveEntry(rec){
+  await apiPost({ type:"entry", record: rec });
+}
+async function loadCorridors(){
+  try{
+    const data = await apiGet("sites");
+    return (data.sites && data.sites.length) ? data.sites : ["Site A"];
+  }catch(e){ return ["Site A"]; }
+}
+async function addCorridor(name){
+  await apiPost({ type:"site", name: name });
+  return await loadCorridors();
+}
+
+/* ================= APP STATE ================= */
+let state = { corridor:"", newSiteMode:false, module:"", location:"", surveyor:"", condition:"Clear",
+  lat:"", lng:"", problem:{}, causes:[], causeOther:"", solutions:[], solutionNote:"",
+  baseline:"", target:"", unit:"", timeframe:"3 months" };
+
+function resetForm(keepSurveyor){
+  const s = keepSurveyor? state.surveyor : "";
+  state = { corridor:state.corridor, newSiteMode:false, module:"", location:"", surveyor:s, condition:"Clear",
+    lat:"", lng:"", problem:{}, causes:[], causeOther:"", solutions:[], solutionNote:"",
+    baseline:"", target:"", unit:"", timeframe:"3 months" };
+}
+
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2200);
+}
+
+function chainFill(){
+  const p = state.module && Object.values(state.problem).some(v=>v!=="" && v!=null);
+  const c = state.causes.length>0 || state.causeOther.trim()!=="";
+  const so = state.solutions.length>0 || state.solutionNote.trim()!=="";
+  const m = state.baseline!=="" && state.target!=="";
+  return {p,c,so,m};
+}
+
+/* ================= RENDER: FIELD MODE ================= */
+let corridorsCache = [];
+
+async function renderField(){
+  corridorsCache = await loadCorridors();
+  const main = document.getElementById("main");
+  const mod = MODULES[state.module];
+  const fill = chainFill();
+
+  main.innerHTML = `
+    <div class="hint">Pick the site, choose what you're observing, then fill Problem → Cause → Solution → Target. A record only strengthens the case to OTP/MOT once all four are answered.</div>
+
+    <div class="card">
+      <div class="head"><span class="n">0</span>Site &amp; context</div>
+      <div class="body">
+        <div class="field">
+          <label>Corridor / site</label>
+          <select id="corridorSel">
+            ${corridorsCache.map(c=>`<option value="${esc(c)}" ${c===state.corridor?"selected":""}>${esc(c)}</option>`).join("")}
+            <option value="__new__">+ Add new site…</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Observation point (landmark, chainage, stop name…)</label>
+          <input type="text" id="locInput" value="${esc(state.location)}" placeholder="e.g. Junction of Rd X / Soi Y">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Surveyor</label>
+            <input type="text" id="surveyorInput" value="${esc(state.surveyor)}" placeholder="Name">
+          </div>
+          <div class="field">
+            <label>Condition</label>
+            <select id="condSel">${CONDITIONS.map(c=>`<option ${c===state.condition?"selected":""}>${c}</option>`).join("")}</select>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Lat <span class="unit">(optional)</span></label><input type="text" id="latInput" value="${esc(state.lat)}"></div>
+          <div class="field"><label>Lng <span class="unit">(optional)</span></label><input type="text" id="lngInput" value="${esc(state.lng)}"></div>
+        </div>
+        <div class="field">
+          <label>What are you observing?</label>
+          <div class="pillrow">
+            ${MODULE_KEYS.map(k=>`<div class="pill ${state.module===k?"sel":""}" data-mod="${k}">${MODULES[k].label}</div>`).join("")}
+          </div>
+        </div>
       </div>
     </div>
-    <div class="field"><label class="lbl">Pedestrian Crossing</label>
-      <select id="f-crosswalk"><option value="">Select</option><option>Yes – marked</option><option>Yes – unmarked</option><option>No</option><option>Unclear</option></select>
+
+    ${mod? `
+    <div class="chain">
+      ${chainNode("1","Problem",fill.p)}${chainBar(fill.p)}
+      ${chainNode("2","Cause",fill.c)}${chainBar(fill.c)}
+      ${chainNode("3","Solution",fill.so)}${chainBar(fill.so)}
+      ${chainNode("4","Metric",fill.m)}
     </div>
-    <div class="field"><label class="lbl">Remarks / OSM cross-check</label><textarea id="f-remarks"></textarea></div>
-  `},
-  bus:{label:"🚌 B · Bus Stop Inventory",html:`
-    <div class="field"><label class="lbl">Stop ID / Name <span class="req">*</span></label><input id="f-name" placeholder="e.g. Sathorn Pier Bus Bay"></div>
-    <div class="gps-status" id="gps-status">📡 Capturing GPS…</div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Latitude</label><input id="f-lat" placeholder="13.XXXXXX"></div>
-      <div class="field"><label class="lbl">Longitude</label><input id="f-lng" placeholder="100.XXXXXX"></div>
-    </div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Stop Count</label><input id="f-count" type="number"></div>
-      <div class="field"><label class="lbl">Route Numbers</label><input id="f-routes" placeholder="e.g. 15, 77, BRT"></div>
-    </div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Shelter</label>
-        <select id="f-shelter"><option value="">Select</option><option>Yes – good</option><option>Yes – damaged</option><option>No</option></select>
-      </div>
-      <div class="field"><label class="lbl">Seating Condition</label>
-        <select id="f-seating"><option value="">Select</option><option>Good</option><option>Fair</option><option>Poor</option><option>Damaged/Missing</option></select>
+
+    <div class="card">
+      <div class="head"><span class="n">1</span>Problem — objective measurement</div>
+      <div class="body">
+        ${mod.problem.map(f=>`
+          <div class="field">
+            <label>${f.label} <span class="unit">(${f.unit})</span></label>
+            <input type="${f.type}" data-pf="${f.id}" value="${esc(state.problem[f.id]||"")}">
+          </div>`).join("")}
       </div>
     </div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Wheelchair Access</label>
-        <select id="f-access"><option value="">Select</option><option>Yes</option><option>Partial</option><option>No</option></select>
-      </div>
-      <div class="field"><label class="lbl">Photo Taken?</label>
-        <select id="f-photo"><option value="">Select</option><option>Yes</option><option>No</option><option>Obstructed</option></select>
-      </div>
-    </div>
-    <div class="field"><label class="lbl">Remarks</label><textarea id="f-remarks"></textarea></div>
-  `},
-  bts:{label:"🚇 C · BTS/MRT Entrance",html:`
-    <div class="field"><label class="lbl">Station Name <span class="req">*</span></label><input id="f-name" placeholder="e.g. BTS Chong Nonsi"></div>
-    <div class="gps-status" id="gps-status">📡 Capturing GPS…</div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Latitude</label><input id="f-lat" placeholder="13.XXXXXX"></div>
-      <div class="field"><label class="lbl">Longitude</label><input id="f-lng" placeholder="100.XXXXXX"></div>
-    </div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Type</label>
-        <select id="f-type"><option value="">Select</option><option>BTS Skytrain</option><option>MRT Subway</option><option>BRT</option><option>Airport Rail Link</option><option>Interchange</option></select>
-      </div>
-      <div class="field"><label class="lbl">Entrances (#)</label><input id="f-entrances" type="number"></div>
-    </div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Interchange Routes</label><input id="f-interchange" placeholder="e.g. BTS↔MRT"></div>
-      <div class="field"><label class="lbl">OSM Verified?</label>
-        <select id="f-osm"><option value="">Select</option><option>Match</option><option>Discrepancy – noted</option><option>Not checked</option></select>
+
+    <div class="card">
+      <div class="head"><span class="n">2</span>Cause — why does it exist?</div>
+      <div class="body">
+        ${mod.causes.map(c=>`
+          <label class="chk"><input type="checkbox" data-cause="${esc(c)}" ${state.causes.includes(c)?"checked":""}> ${c}</label>
+        `).join("")}
+        <div class="field" style="margin-top:10px;">
+          <label>Other root cause</label>
+          <input type="text" id="causeOther" value="${esc(state.causeOther)}" placeholder="If not listed above">
+        </div>
       </div>
     </div>
-    <div class="field"><label class="lbl">Last-mile Connection</label><input id="f-lastmile" placeholder="e.g. Taxi bay, BRT stop"></div>
-    <div class="field"><label class="lbl">Remarks</label><textarea id="f-remarks"></textarea></div>
-  `},
-  flood:{label:"🌊 D · Flood-Risk Survey",html:`
-    <div class="field"><label class="lbl">Location Description <span class="req">*</span></label><input id="f-name" placeholder="e.g. Rama IV × Ratchadaphisek underpass"></div>
-    <div class="gps-status" id="gps-status">📡 Capturing GPS…</div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Latitude</label><input id="f-lat" placeholder="13.XXXXXX"></div>
-      <div class="field"><label class="lbl">Longitude</label><input id="f-lng" placeholder="100.XXXXXX"></div>
-    </div>
-    <div class="field"><label class="lbl">Flood Severity Score</label>
-      <select id="f-severity"><option value="">Select</option><option>Low</option><option>Medium</option><option>High</option><option>Critical</option></select>
-    </div>
-    <div class="field"><label class="lbl">Evidence Observed (tick all that apply)</label>
-      <div class="chk-group">
-        <label><input type="checkbox" value="Water stains"> Water stains</label>
-        <label><input type="checkbox" value="Drain blockage"> Drain blockage</label>
-        <label><input type="checkbox" value="Subsidence/crack"> Subsidence / crack</label>
-        <label><input type="checkbox" value="Resident report"> Resident report</label>
-        <label><input type="checkbox" value="Standing water"> Standing water (current)</label>
+
+    <div class="card">
+      <div class="head"><span class="n">3</span>Solution — recommended intervention</div>
+      <div class="body">
+        ${mod.solutions.map(s=>`
+          <label class="chk"><input type="checkbox" data-sol="${esc(s)}" ${state.solutions.includes(s)?"checked":""}> ${s}</label>
+        `).join("")}
+        <div class="field" style="margin-top:10px;">
+          <label>Notes</label>
+          <textarea id="solNote" placeholder="Practical constraints, sequencing, dependencies…">${esc(state.solutionNote)}</textarea>
+        </div>
       </div>
     </div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Resident Interviews (#)</label><input id="f-interviews" type="number"></div>
-      <div class="field"><label class="lbl">Drainage Condition</label>
-        <select id="f-drainage"><option value="">Select</option><option>Good – clear</option><option>Blocked</option><option>Absent</option><option>Unknown</option></select>
+
+    <div class="card">
+      <div class="head"><span class="n">4</span>Metric — how we'll prove success</div>
+      <div class="body">
+        <div class="row2">
+          <div class="field"><label>Baseline value</label><input type="text" id="baseline" value="${esc(state.baseline)}" placeholder="current"></div>
+          <div class="field"><label>Target value</label><input type="text" id="target" value="${esc(state.target)}" placeholder="goal"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Unit</label><input type="text" id="unit" value="${esc(state.unit)}" placeholder="${esc(mod.metricHint)}"></div>
+          <div class="field"><label>Timeframe</label><select id="timeframe">${TIMEFRAMES.map(t=>`<option ${t===state.timeframe?"selected":""}>${t}</option>`).join("")}</select></div>
+        </div>
       </div>
     </div>
-    <div class="field"><label class="lbl">Recommended Action</label><textarea id="f-action"></textarea></div>
-    <div class="field"><label class="lbl">Remarks</label><textarea id="f-remarks"></textarea></div>
-  `},
-  cctv:{label:"📷 E · CCTV / Signal Cabinet",html:`
-    <div class="field"><label class="lbl">Location / Pole ID <span class="req">*</span></label><input id="f-name" placeholder="e.g. Asoke × Sukhumvit NE corner"></div>
-    <div class="gps-status" id="gps-status">📡 Capturing GPS…</div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Latitude</label><input id="f-lat" placeholder="13.XXXXXX"></div>
-      <div class="field"><label class="lbl">Longitude</label><input id="f-lng" placeholder="100.XXXXXX"></div>
+
+    <div class="btnRow">
+      <button class="btn ghost" id="clearBtn">Clear</button>
+      <button class="btn primary" id="submitBtn" ${(!state.corridor||!state.location||!state.surveyor)?"disabled":""}>Save record</button>
     </div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Installation Type</label>
-        <select id="f-type"><option value="">Select</option><option>CCTV camera</option><option>Traffic signal cabinet</option><option>Both</option><option>Signal head only</option></select>
-      </div>
-      <div class="field"><label class="lbl">Condition</label>
-        <select id="f-condition"><option value="">Select</option><option>Good</option><option>Fair</option><option>Poor</option><option>Damaged/Missing</option></select>
+    `:""}
+  `;
+  wireField();
+}
+
+function chainNode(n,label,filled){
+  return `<div class="node"><div class="dot ${filled?"filled":""}">${filled?"✓":n}</div><div class="lbl">${label}</div></div>`;
+}
+function chainBar(filled){ return `<div class="bar ${filled?"filled":""}"></div>`; }
+function esc(s){ return (s+"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+
+function wireField(){
+  const $=id=>document.getElementById(id);
+  $("corridorSel").onchange = async e=>{
+    if(e.target.value==="__new__"){
+      const name = prompt("New site / corridor name:");
+      if(name && name.trim()){ await addCorridor(name.trim()); state.corridor=name.trim(); }
+      renderField();
+    } else { state.corridor = e.target.value; }
+  };
+  if(!state.corridor && corridorsCache.length) state.corridor = corridorsCache[0];
+  $("locInput").oninput = e=> state.location = e.target.value;
+  $("surveyorInput").oninput = e=> state.surveyor = e.target.value;
+  $("condSel").onchange = e=> state.condition = e.target.value;
+  $("latInput").oninput = e=> state.lat = e.target.value;
+  $("lngInput").oninput = e=> state.lng = e.target.value;
+  document.querySelectorAll("[data-mod]").forEach(p=> p.onclick = ()=>{
+    const same = state.module===p.dataset.mod;
+    const surv=state.surveyor, corr=state.corridor, loc=state.location, cond=state.condition, lat=state.lat, lng=state.lng;
+    resetForm(true);
+    state.surveyor=surv; state.corridor=corr; state.location=loc; state.condition=cond; state.lat=lat; state.lng=lng;
+    state.module = same? "" : p.dataset.mod;
+    renderField();
+  });
+  document.querySelectorAll("[data-pf]").forEach(i=> i.oninput = e=>{ state.problem[e.target.dataset.pf]=e.target.value; refreshChainOnly(); });
+  document.querySelectorAll("[data-cause]").forEach(i=> i.onchange = e=>{
+    const v=e.target.dataset.cause;
+    if(e.target.checked) state.causes.push(v); else state.causes=state.causes.filter(x=>x!==v);
+    refreshChainOnly();
+  });
+  const co = $("causeOther"); if(co) co.oninput = e=>{ state.causeOther=e.target.value; refreshChainOnly(); };
+  document.querySelectorAll("[data-sol]").forEach(i=> i.onchange = e=>{
+    const v=e.target.dataset.sol;
+    if(e.target.checked) state.solutions.push(v); else state.solutions=state.solutions.filter(x=>x!==v);
+    refreshChainOnly();
+  });
+  const sn=$("solNote"); if(sn) sn.oninput = e=>{ state.solutionNote=e.target.value; };
+  const bl=$("baseline"); if(bl) bl.oninput = e=>{ state.baseline=e.target.value; refreshChainOnly(); };
+  const tg=$("target"); if(tg) tg.oninput = e=>{ state.target=e.target.value; refreshChainOnly(); };
+  const un=$("unit"); if(un) un.oninput = e=>{ state.unit=e.target.value; };
+  const tf=$("timeframe"); if(tf) tf.onchange = e=>{ state.timeframe=e.target.value; };
+
+  const clearBtn = $("clearBtn"); if(clearBtn) clearBtn.onclick = ()=>{ resetForm(true); renderField(); };
+  const submitBtn = $("submitBtn");
+  if(submitBtn) submitBtn.onclick = async ()=>{
+    submitBtn.disabled=true; submitBtn.textContent="Saving…";
+    const fill = chainFill();
+    const rec = {
+      ts: Date.now(), corridor: state.corridor, module: state.module, moduleLabel: MODULES[state.module].label,
+      location: state.location, surveyor: state.surveyor, condition: state.condition, lat: state.lat, lng: state.lng,
+      problem: {...state.problem}, causes:[...state.causes], causeOther: state.causeOther,
+      solutions:[...state.solutions], solutionNote: state.solutionNote,
+      baseline: state.baseline, target: state.target, unit: state.unit, timeframe: state.timeframe,
+      complete: fill.p && fill.c && fill.so && fill.m
+    };
+    try{
+      await saveEntry(rec);
+      toast(rec.complete? "Saved — full evidence chain ✓" : "Saved — evidence chain incomplete");
+      resetForm(true);
+      renderField();
+    }catch(e){
+      toast("Save failed — check connection");
+      submitBtn.disabled=false; submitBtn.textContent="Save record";
+    }
+  };
+}
+function refreshChainOnly(){
+  const fill = chainFill();
+  const dots = document.querySelectorAll(".chain .dot");
+  const bars = document.querySelectorAll(".chain .bar");
+  if(dots.length){
+    const vals=[fill.p,fill.c,fill.so,fill.m];
+    dots.forEach((d,i)=>{ d.classList.toggle("filled", vals[i]); d.textContent = vals[i]? "✓" : (i+1); });
+    bars.forEach((b,i)=> b.classList.toggle("filled", vals[i]));
+  }
+  const submitBtn=document.getElementById("submitBtn");
+  if(submitBtn) submitBtn.disabled = !(state.corridor && state.location && state.surveyor);
+}
+
+/* ================= RENDER: SUPERVISOR MODE ================= */
+let supAuthed = false;
+async function renderSupervisor(){
+  const main = document.getElementById("main");
+  if(!supAuthed){
+    main.innerHTML = `
+      <div class="gate">
+        <div class="disp" style="font-size:16px;font-weight:700;color:var(--blue);margin-bottom:6px;">Supervisor access</div>
+        <div style="font-size:12px;color:#8a8171;">Enter the review passcode</div>
+        <input type="text" id="pass" placeholder="passcode">
+        <div><button class="btn primary" id="enterBtn" style="padding:10px 22px;">Enter</button></div>
+      </div>`;
+    document.getElementById("enterBtn").onclick = ()=>{
+      if(document.getElementById("pass").value === PASSCODE){ supAuthed=true; renderSupervisor(); }
+      else toast("Incorrect passcode");
+    };
+    return;
+  }
+  const entries = await loadEntries();
+  const total = entries.length;
+  const complete = entries.filter(e=>e.complete).length;
+  const pct = total? Math.round(complete/total*100):0;
+
+  const byModule = {}; MODULE_KEYS.forEach(k=>byModule[k]=0);
+  entries.forEach(e=> byModule[e.module] = (byModule[e.module]||0)+1);
+  const maxMod = Math.max(1,...Object.values(byModule));
+
+  const byCorridor = {};
+  entries.forEach(e=> byCorridor[e.corridor] = (byCorridor[e.corridor]||0)+1);
+  const maxCorr = Math.max(1,...Object.values(byCorridor));
+
+  const corridors = await loadCorridors();
+
+  main.innerHTML = `
+    <div class="stats">
+      <div class="stat"><div class="num">${total}</div><div class="lbl">Total records</div></div>
+      <div class="stat"><div class="num">${pct}%</div><div class="lbl">Full evidence chains</div></div>
+    </div>
+
+    <div class="card"><div class="head">By observation type</div><div class="body barchart">
+      ${MODULE_KEYS.map(k=>`<div class="brow"><div class="bname">${MODULES[k].label}</div><div class="btrack"><div class="bfill" style="width:${byModule[k]/maxMod*100}%"></div></div><div class="bnum">${byModule[k]}</div></div>`).join("")}
+    </div></div>
+
+    <div class="card"><div class="head">By corridor / site</div><div class="body barchart">
+      ${Object.keys(byCorridor).length? Object.entries(byCorridor).map(([c,n])=>`<div class="brow"><div class="bname">${esc(c)}</div><div class="btrack"><div class="bfill" style="width:${n/maxCorr*100}%;background:var(--orange);"></div></div><div class="bnum">${n}</div></div>`).join("") : "<div style='font-size:12px;color:#8a8171;'>No records yet.</div>"}
+    </div></div>
+
+    <div class="card">
+      <div class="head">Records <span style="margin-left:auto;font-weight:400;text-transform:none;letter-spacing:0;">${entries.length}</span></div>
+      <div class="body">
+        <div class="filterRow">
+          <select id="fMod"><option value="">All types</option>${MODULE_KEYS.map(k=>`<option value="${k}">${MODULES[k].label}</option>`).join("")}</select>
+          <select id="fCorr"><option value="">All sites</option>${corridors.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("")}</select>
+          <select id="fFlag"><option value="">All</option><option value="incomplete">Incomplete only</option><option value="complete">Complete only</option></select>
+        </div>
+        <div class="reclist" id="recList"></div>
       </div>
     </div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Camera Coverage</label>
-        <select id="f-coverage"><option value="">Select</option><option>Full</option><option>Partial</option><option>Blocked</option><option>Unknown</option></select>
-      </div>
-      <div class="field"><label class="lbl">Units Visible (#)</label><input id="f-units" type="number"></div>
-    </div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Mounting</label>
-        <select id="f-mount"><option value="">Select</option><option>Pole-mounted</option><option>Building-mounted</option><option>Overhead gantry</option><option>Unknown</option></select>
-      </div>
-      <div class="field"><label class="lbl">Photo Taken?</label>
-        <select id="f-photo"><option value="">Select</option><option>Yes</option><option>No</option><option>Obstructed</option></select>
-      </div>
-    </div>
-    <div class="field"><label class="lbl">Remarks</label><textarea id="f-remarks"></textarea></div>
-  `},
-  gis:{label:"🗺️ F · GIS / General Note",html:`
-    <div class="field"><label class="lbl">Feature Name <span class="req">*</span></label><input id="f-name" placeholder="e.g. U-turn at EmQuartier"></div>
-    <div class="gps-status" id="gps-status">📡 Capturing GPS…</div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Latitude</label><input id="f-lat" placeholder="13.XXXXXX"></div>
-      <div class="field"><label class="lbl">Longitude</label><input id="f-lng" placeholder="100.XXXXXX"></div>
-    </div>
-    <div class="row2">
-      <div class="field"><label class="lbl">Feature Type</label>
-        <select id="f-ftype"><option value="">Select</option><option>Intersection</option><option>U-turn</option><option>Road marking</option><option>Signage</option><option>Land use boundary</option><option>Other</option></select>
-      </div>
-      <div class="field"><label class="lbl">Map Accuracy</label>
-        <select id="f-mapacc"><option value="">Select</option><option>Accurate</option><option>Minor error</option><option>Major error / missing</option><option>Not on map</option></select>
-      </div>
-    </div>
-    <div class="field"><label class="lbl">Correction Needed</label><textarea id="f-correction" placeholder="Describe what to fix in QGIS/KMZ"></textarea></div>
-    <div class="field"><label class="lbl">Remarks</label><textarea id="f-remarks"></textarea></div>
-  `}
+    <div class="btnRow"><button class="btn primary wide" id="exportBtn">Export CSV</button></div>
+  `;
+
+  function draw(){
+    const fm=document.getElementById("fMod").value, fc=document.getElementById("fCorr").value, ff=document.getElementById("fFlag").value;
+    let list = entries.filter(e=>
+      (!fm || e.module===fm) && (!fc || e.corridor===fc) &&
+      (!ff || (ff==="complete"? e.complete : !e.complete))
+    );
+    document.getElementById("recList").innerHTML = list.length? list.map(e=>`
+      <div class="rec">
+        <div class="top"><span class="mod">${e.moduleLabel}</span><span class="flag ${e.complete?"ok":""}">${e.complete?"Complete":"Incomplete"}</span></div>
+        <div class="meta">${esc(e.corridor)} · ${esc(e.location)} · ${new Date(e.ts).toLocaleString()} · ${esc(e.surveyor)}</div>
+      </div>`).join("") : "<div style='font-size:12px;color:#8a8171;'>No matching records.</div>";
+  }
+  draw();
+  ["fMod","fCorr","fFlag"].forEach(id=> document.getElementById(id).onchange = draw);
+
+  document.getElementById("exportBtn").onclick = ()=>{
+    const cols = ["ts","corridor","module","location","surveyor","condition","lat","lng","problem","causes","causeOther","solutions","solutionNote","baseline","target","unit","timeframe","complete"];
+    const rows = [cols.join(",")];
+    entries.forEach(e=>{
+      const row = cols.map(c=>{
+        let v = e[c];
+        if(c==="problem") v = JSON.stringify(e.problem);
+        if(c==="causes"||c==="solutions") v = (e[c]||[]).join(" | ");
+        if(c==="ts") v = new Date(e.ts).toISOString();
+        v = (v===undefined||v===null)? "" : String(v);
+        return '"'+v.replace(/"/g,'""')+'"';
+      });
+      rows.push(row.join(","));
+    });
+    const blob = new Blob([rows.join("\n")], {type:"text/csv"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href=url; a.download="phase0_evidence_"+Date.now()+".csv"; a.click();
+    URL.revokeObjectURL(url);
+  };
+}
+
+/* ================= MODE SWITCH ================= */
+document.getElementById("tabField").onclick = ()=>{
+  document.getElementById("tabField").classList.add("active");
+  document.getElementById("tabSup").classList.remove("active");
+  renderField();
+};
+document.getElementById("tabSup").onclick = ()=>{
+  document.getElementById("tabSup").classList.add("active");
+  document.getElementById("tabField").classList.remove("active");
+  renderSupervisor();
 };
 
-let currentModule = null;
-
-function openModule(id){
-  const corridor = document.getElementById("h-corridor").value;
-  const sid = document.getElementById("h-sid").value.trim();
-  if(!corridor||!sid){ alert("Please set Corridor and Surveyor ID first."); return; }
-  currentModule = id;
-  document.getElementById("form-module-label").textContent = MODULES[id].label;
-  document.getElementById("form-ctx").textContent = `🗺 ${corridor}  ·  👤 ${sid}  ·  📅 ${document.getElementById("h-date").value}`;
-  document.getElementById("form-body").innerHTML = MODULES[id].html;
-  document.getElementById("submit-status").textContent = "";
-  document.getElementById("submit-btn").disabled = false;
-  showPage("page-form");
-  autoGPS();
-}
-
-// ── AUTO GPS ──────────────────────────────────────────────
-function autoGPS(){
-  const status = document.getElementById("gps-status");
-  if(!navigator.geolocation){
-    status.textContent = "⚠️ GPS not available — enter manually";
-    return;
-  }
-  navigator.geolocation.getCurrentPosition(
-    p => {
-      document.getElementById("f-lat").value = p.coords.latitude.toFixed(6);
-      document.getElementById("f-lng").value = p.coords.longitude.toFixed(6);
-      status.textContent = `✅ GPS captured · ±${Math.round(p.coords.accuracy)}m accuracy`;
-      status.style.color = "#16a34a";
-    },
-    () => {
-      status.textContent = "❌ GPS denied — enter manually or allow location";
-      status.style.color = "#ef4444";
-    },
-    {enableHighAccuracy:true, timeout:10000}
-  );
-}
-
-// ── SUBMIT ────────────────────────────────────────────────
-function g(id){ const el=document.getElementById(id); return el?el.value.trim():""; }
-function chks(){ return [...document.querySelectorAll(".chk-group input:checked")].map(c=>c.value).join("; "); }
-
-async function submitForm(){
-  if(SHEET_URL === "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE"){
-    alert("⚠️ Setup needed: Paste your Google Apps Script URL into the SHEET_URL variable in this file.");
-    return;
-  }
-  const name = g("f-name");
-  if(!name){ alert("Name / ID field is required."); return; }
-
-  const btn = document.getElementById("submit-btn");
-  const status = document.getElementById("submit-status");
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Submitting…';
-  status.textContent = "";
-
-  const rec = {
-    timestamp: new Date().toISOString(),
-    corridor: document.getElementById("h-corridor").value,
-    module: currentModule,
-    surveyorId: document.getElementById("h-sid").value.trim(),
-    date: document.getElementById("h-date").value,
-    name,
-    lat:g("f-lat"), lng:g("f-lng"),
-    phases:g("f-phases"), congestion:g("f-congestion"), crosswalk:g("f-crosswalk"),
-    count:g("f-count"), routes:g("f-routes"), shelter:g("f-shelter"), seating:g("f-seating"), access:g("f-access"),
-    type:g("f-type"), entrances:g("f-entrances"), interchange:g("f-interchange"), osm:g("f-osm"), lastmile:g("f-lastmile"),
-    severity:g("f-severity"), evidence:chks(), interviews:g("f-interviews"), drainage:g("f-drainage"), action:g("f-action"),
-    condition:g("f-condition"), coverage:g("f-coverage"), units:g("f-units"), mount:g("f-mount"), photo:g("f-photo"),
-    featureType:g("f-ftype"), mapAccuracy:g("f-mapacc"), correction:g("f-correction"),
-    remarks:g("f-remarks")
-  };
-
-  try {
-    await fetch(SHEET_URL, {
-      method:"POST",
-      mode:"no-cors",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify(rec)
-    });
-    toast("✅ Submitted to Google Sheets!");
-    showPage("page-home");
-  } catch(e) {
-    status.textContent = "❌ Submit failed — check internet connection.";
-    btn.disabled = false;
-    btn.innerHTML = "✅ Submit Entry";
-  }
-}
-
-// ── SUPERVISOR ────────────────────────────────────────────
-function supervisorLogin(){
-  if(document.getElementById("sv-pw").value === SV_PASSWORD){
-    document.getElementById("sv-pw").value = "";
-    document.getElementById("login-err").textContent = "";
-    showPage("page-supervisor");
-    loadSupervisor();
-  } else {
-    document.getElementById("login-err").textContent = "❌ Incorrect password.";
-  }
-}
-
-let svData = [];
-
-async function loadSupervisor(){
-  if(SHEET_URL === "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE"){
-    document.getElementById("sv-loading").textContent = "⚠️ Google Sheets not connected yet.";
-    return;
-  }
-  document.getElementById("sv-loading").style.display = "block";
-  document.getElementById("sv-content").style.display = "none";
-  try {
-    const res = await fetch(SHEET_URL + "?action=get");
-    const data = await res.json();
-    svData = data;
-    renderStats();
-    renderTable();
-    document.getElementById("sv-loading").style.display = "none";
-    document.getElementById("sv-content").style.display = "block";
-  } catch(e) {
-    document.getElementById("sv-loading").textContent = "❌ Could not load data. Check internet.";
-  }
-}
-
-const MOD_ICONS = {gps:"📍",bus:"🚌",bts:"🚇",flood:"🌊",cctv:"📷",gis:"🗺️"};
-const SEV_CLS = {Low:"badge-green",Medium:"badge-amber",High:"badge-red",Critical:"badge-red"};
-
-function renderStats(){
-  const d = svData;
-  document.getElementById("sv-stats").innerHTML = `
-    <div class="stat-box"><div class="stat-num">${d.length}</div><div class="stat-lbl">Total Entries</div></div>
-    <div class="stat-box"><div class="stat-num">${[...new Set(d.map(r=>r.surveyorId))].filter(Boolean).length}</div><div class="stat-lbl">Surveyors</div></div>
-    <div class="stat-box"><div class="stat-num">${[...new Set(d.map(r=>r.corridor))].filter(Boolean).length}</div><div class="stat-lbl">Corridors</div></div>
-  `;
-}
-
-function renderTable(){
-  const filter = document.getElementById("sv-filter").value;
-  const data = filter ? svData.filter(r=>r.corridor===filter) : svData;
-  if(!data.length){ document.getElementById("sv-table").innerHTML="<p style='color:var(--slate);padding:10px 0;'>No records yet.</p>"; return; }
-  document.getElementById("sv-table").innerHTML = `
-    <table>
-      <thead><tr><th>Module</th><th>Name / Location</th><th>Corridor</th><th>Surveyor</th><th>Date</th><th>Key Info</th></tr></thead>
-      <tbody>${[...data].reverse().map(r=>`
-        <tr>
-          <td>${MOD_ICONS[r.module]||""} ${(r.module||"").toUpperCase()}</td>
-          <td><b>${r.name||""}</b></td>
-          <td><span class="badge">${r.corridor||""}</span></td>
-          <td>${r.surveyorId||""}</td>
-          <td>${r.date||""}</td>
-          <td>${r.severity?`<span class="badge ${SEV_CLS[r.severity]||""}">${r.severity}</span> `:""}${r.lat?`📍GPS `:""}${r.condition||""}${r.congestion?` ${r.congestion}`:""}</td>
-        </tr>`).join("")}
-      </tbody>
-    </table>`;
-}
-
-function exportCSV(){
-  if(!svData.length){ alert("No data to export."); return; }
-  const keys = [...new Set(svData.flatMap(Object.keys))];
-  const rows = [keys.join(","), ...svData.map(r=>keys.map(k=>JSON.stringify(r[k]??'')).join(","))];
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([rows.join("\n")],{type:"text/csv"}));
-  a.download = "BKK_MOT_Survey_All.csv"; a.click();
+if(APPS_SCRIPT_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")){
+  document.getElementById("main").innerHTML = `<div class="hint" style="border-left-color:var(--orange);">⚠ Backend not configured. Open this file, find <code>APPS_SCRIPT_URL</code> near the top of the &lt;script&gt;, and paste your Google Apps Script Web App URL (see setup guide).</div>`;
+} else {
+  renderField();
 }
 </script>
 </body>
