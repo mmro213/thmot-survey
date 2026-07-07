@@ -178,14 +178,26 @@ const MODULES = {
     metricHint:"e.g. coverage 60%→90%, −5min detection time" }
 };
 const MODULE_KEYS = Object.keys(MODULES);
+const VOLUME_FIELD = { // Pass A gap #2: exposure context so severity numbers are interpretable
+  junction:{label:"Vehicle volume during observation",unit:"veh/hr"},
+  bus:{label:"Passenger volume during observation",unit:"pax/hr"},
+  ped:{label:"Pedestrian volume during observation",unit:"ped/hr"},
+  curb:{label:"Vehicle/loading volume during observation",unit:"veh/hr"},
+  flood:{label:"Traffic volume affected",unit:"veh/hr"},
+  asset:{label:"Usage volume (traffic/pedestrian)",unit:"per hr"},
+  cctv:{label:"Area traffic/pedestrian volume",unit:"per hr"}
+};
+MODULE_KEYS.forEach(k=> MODULES[k].problem.push({id:"volume", label:VOLUME_FIELD[k].label, unit:VOLUME_FIELD[k].unit, type:"number"}));
 const CONDITIONS = ["Clear","Rain","Post-flood","Peak hour","Off-peak","Night","Event/closure"];
-const TIMEFRAMES = ["Immediately","3 months","6 months","12 months","Post-Phase 1"];
+const TIMEFRAMES = ["3 months","6 months","12 months","Post-Phase 1"];
+const MEASUREMENT_BASIS = ["Spot count","Sustained observation (\u22651hr)","Multi-day average"];
+const COST_TIERS = ["Low","Medium","High"];
 const PASSCODE = "MOTJun2026";
 
 /* ================= BACKEND: Google Sheets via Apps Script ================= */
 // 1. Deploy the companion Apps Script as a Web App (see setup guide).
 // 2. Paste the resulting /exec URL below.
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyhJTErvwWAkUeW2AjKiZ2QWQ9fohowDh6rMRg79zmDVY-E3uBghiFm2m29Sgsp8Yqrcg/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/library/d/1JlDkeOCphy0AfofwrOt17AUP-EtCGsqLS6z3nzsviOGRppxtYbltnLBU/1";
 
 function jsonp(url){
   return new Promise((resolve,reject)=>{
@@ -237,14 +249,14 @@ async function addCorridor(name){
 }
 
 /* ================= APP STATE ================= */
-let state = { corridor:"", newSiteMode:false, module:"", location:"", surveyor:"", condition:"Clear",
-  lat:"", lng:"", problem:{}, causes:[], causeOther:"", solutions:[], solutionNote:"",
+let state = { corridor:"", newSiteMode:false, module:"", location:"", surveyor:"", condition:"Clear", measurementBasis:"Spot count",
+  lat:"", lng:"", problem:{}, causes:[], causeOther:"", solutions:[], solutionNote:"", costTier:"Medium", feasibilityNotes:"",
   baseline:"", target:"", unit:"", timeframe:"3 months" };
 
 function resetForm(keepSurveyor){
   const s = keepSurveyor? state.surveyor : "";
-  state = { corridor:state.corridor, newSiteMode:false, module:"", location:"", surveyor:s, condition:"Clear",
-    lat:"", lng:"", problem:{}, causes:[], causeOther:"", solutions:[], solutionNote:"",
+  state = { corridor:state.corridor, newSiteMode:false, module:"", location:"", surveyor:s, condition:"Clear", measurementBasis:"Spot count",
+    lat:"", lng:"", problem:{}, causes:[], causeOther:"", solutions:[], solutionNote:"", costTier:"Medium", feasibilityNotes:"",
     baseline:"", target:"", unit:"", timeframe:"3 months" };
 }
 
@@ -308,6 +320,10 @@ async function renderField(){
             <select id="condSel">${CONDITIONS.map(c=>`<option ${c===state.condition?"selected":""}>${c}</option>`).join("")}</select>
           </div>
         </div>
+        <div class="field">
+          <label>Measurement basis</label>
+          <select id="basisSel">${MEASUREMENT_BASIS.map(b=>`<option ${b===state.measurementBasis?"selected":""}>${b}</option>`).join("")}</select>
+        </div>
         <div class="row2">
           <div class="field"><label>Lat <span class="unit">(optional)</span></label><input type="text" id="latInput" value="${esc(state.lat)}"></div>
           <div class="field"><label>Lng <span class="unit">(optional)</span></label><input type="text" id="lngInput" value="${esc(state.lng)}"></div>
@@ -364,6 +380,16 @@ async function renderField(){
           <label>Notes</label>
           <textarea id="solNote" placeholder="Practical constraints, sequencing, dependencies…">${esc(state.solutionNote)}</textarea>
         </div>
+        <div class="row2">
+          <div class="field">
+            <label>Rough cost tier</label>
+            <select id="costTierSel">${COST_TIERS.map(c=>`<option ${c===state.costTier?"selected":""}>${c}</option>`).join("")}</select>
+          </div>
+          <div class="field">
+            <label>Feasibility constraint</label>
+            <input type="text" id="feasInput" value="${esc(state.feasibilityNotes)}" placeholder="Land / utility / ownership issue, if any">
+          </div>
+        </div>
       </div>
     </div>
 
@@ -418,6 +444,7 @@ function wireField(){
   $("locInput").oninput = e=>{ state.location = e.target.value; refreshChainOnly(); };
   $("surveyorInput").oninput = e=>{ state.surveyor = e.target.value; refreshChainOnly(); };
   $("condSel").onchange = e=> state.condition = e.target.value;
+  const basisSel = $("basisSel"); if(basisSel) basisSel.onchange = e=> state.measurementBasis = e.target.value;
   $("latInput").oninput = e=> state.lat = e.target.value;
   $("lngInput").oninput = e=> state.lng = e.target.value;
   const gpsBtn = $("gpsBtn");
@@ -461,6 +488,8 @@ function wireField(){
     refreshChainOnly();
   });
   const sn=$("solNote"); if(sn) sn.oninput = e=>{ state.solutionNote=e.target.value; };
+  const ctSel=$("costTierSel"); if(ctSel) ctSel.onchange = e=> state.costTier=e.target.value;
+  const feasInput=$("feasInput"); if(feasInput) feasInput.oninput = e=> state.feasibilityNotes=e.target.value;
   const bl=$("baseline"); if(bl) bl.oninput = e=>{ state.baseline=e.target.value; refreshChainOnly(); };
   const tg=$("target"); if(tg) tg.oninput = e=>{ state.target=e.target.value; refreshChainOnly(); };
   const un=$("unit"); if(un) un.oninput = e=>{ state.unit=e.target.value; };
@@ -474,8 +503,9 @@ function wireField(){
     const rec = {
       ts: Date.now(), corridor: state.corridor, module: state.module, moduleLabel: MODULES[state.module].label,
       location: state.location, surveyor: state.surveyor, condition: state.condition, lat: state.lat, lng: state.lng,
+      measurementBasis: state.measurementBasis,
       problem: {...state.problem}, causes:[...state.causes], causeOther: state.causeOther,
-      solutions:[...state.solutions], solutionNote: state.solutionNote,
+      solutions:[...state.solutions], solutionNote: state.solutionNote, costTier: state.costTier, feasibilityNotes: state.feasibilityNotes,
       baseline: state.baseline, target: state.target, unit: state.unit, timeframe: state.timeframe,
       complete: fill.p && fill.c && fill.so && fill.m
     };
