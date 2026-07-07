@@ -497,9 +497,11 @@ function wireField(){
   };
   document.querySelectorAll("[data-mod]").forEach(p=> p.onclick = ()=>{
     const same = state.module===p.dataset.mod;
-    const surv=state.surveyor, corr=state.corridor, loc=state.location, cond=state.condition, lat=state.lat, lng=state.lng;
+    const surv=state.surveyor, corr=state.corridor, loc=state.location, cond=state.condition, lat=state.lat, lng=state.lng,
+          basis=state.measurementBasis, times=state.timesObserved, photoData=state.photoData, photoName=state.photoName;
     resetForm(true);
     state.surveyor=surv; state.corridor=corr; state.location=loc; state.condition=cond; state.lat=lat; state.lng=lng;
+    state.measurementBasis=basis; state.timesObserved=times; state.photoData=photoData; state.photoName=photoName;
     state.module = same? "" : p.dataset.mod;
     renderField();
   });
