@@ -249,14 +249,14 @@ async function addCorridor(name){
 }
 
 /* ================= APP STATE ================= */
-let state = { corridor:"", newSiteMode:false, module:"", location:"", surveyor:"", condition:"Clear", measurementBasis:"Spot count",
-  lat:"", lng:"", problem:{}, causes:[], causeOther:"", solutions:[], solutionNote:"", costTier:"Medium", feasibilityNotes:"",
+let state = { corridor:"", newSiteMode:false, module:"", location:"", surveyor:"", condition:"Clear", measurementBasis:"Spot count", timesObserved:"",
+  lat:"", lng:"", photoData:"", photoName:"", problem:{}, causes:[], causeOther:"", solutions:[], solutionNote:"", costTier:"Medium", feasibilityNotes:"",
   baseline:"", target:"", unit:"", timeframe:"3 months" };
 
 function resetForm(keepSurveyor){
   const s = keepSurveyor? state.surveyor : "";
-  state = { corridor:state.corridor, newSiteMode:false, module:"", location:"", surveyor:s, condition:"Clear", measurementBasis:"Spot count",
-    lat:"", lng:"", problem:{}, causes:[], causeOther:"", solutions:[], solutionNote:"", costTier:"Medium", feasibilityNotes:"",
+  state = { corridor:state.corridor, newSiteMode:false, module:"", location:"", surveyor:s, condition:"Clear", measurementBasis:"Spot count", timesObserved:"",
+    lat:"", lng:"", photoData:"", photoName:"", problem:{}, causes:[], causeOther:"", solutions:[], solutionNote:"", costTier:"Medium", feasibilityNotes:"",
     baseline:"", target:"", unit:"", timeframe:"3 months" };
 }
 
@@ -320,15 +320,28 @@ async function renderField(){
             <select id="condSel">${CONDITIONS.map(c=>`<option ${c===state.condition?"selected":""}>${c}</option>`).join("")}</select>
           </div>
         </div>
-        <div class="field">
-          <label>Measurement basis</label>
-          <select id="basisSel">${MEASUREMENT_BASIS.map(b=>`<option ${b===state.measurementBasis?"selected":""}>${b}</option>`).join("")}</select>
+        <div class="row2">
+          <div class="field">
+            <label>Measurement basis</label>
+            <select id="basisSel">${MEASUREMENT_BASIS.map(b=>`<option ${b===state.measurementBasis?"selected":""}>${b}</option>`).join("")}</select>
+          </div>
+          <div class="field">
+            <label>Times observed <span class="unit">(past 6mo, est.)</span></label>
+            <input type="number" id="recurInput" value="${esc(state.timesObserved)}" placeholder="e.g. 12">
+          </div>
         </div>
         <div class="row2">
           <div class="field"><label>Lat <span class="unit">(optional)</span></label><input type="text" id="latInput" value="${esc(state.lat)}"></div>
           <div class="field"><label>Lng <span class="unit">(optional)</span></label><input type="text" id="lngInput" value="${esc(state.lng)}"></div>
         </div>
         <button type="button" class="btn ghost wide" id="gpsBtn" style="margin-bottom:14px;">📍 Use my current location</button>
+        <div class="field">
+          <label>Photo evidence <span class="unit">(optional)</span></label>
+          <input type="file" id="photoInput" accept="image/*" capture="environment">
+          <div id="photoPreviewWrap" style="margin-top:8px;${state.photoData?"":"display:none;"}">
+            <img id="photoPreview" src="${state.photoData||""}" style="max-width:100%;border-radius:6px;border:1px solid var(--line);">
+          </div>
+        </div>
         <div class="field">
           <label>What are you observing?</label>
           <div class="pillrow">
@@ -445,6 +458,21 @@ function wireField(){
   $("surveyorInput").oninput = e=>{ state.surveyor = e.target.value; refreshChainOnly(); };
   $("condSel").onchange = e=> state.condition = e.target.value;
   const basisSel = $("basisSel"); if(basisSel) basisSel.onchange = e=> state.measurementBasis = e.target.value;
+  const recurInput = $("recurInput"); if(recurInput) recurInput.oninput = e=> state.timesObserved = e.target.value;
+  const photoInput = $("photoInput");
+  if(photoInput) photoInput.onchange = e=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    if(file.size > 4*1024*1024){ toast("Photo too large — please use one under 4MB"); e.target.value=""; return; }
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      state.photoData = reader.result; // data URL, e.g. data:image/jpeg;base64,...
+      state.photoName = file.name;
+      const wrap = $("photoPreviewWrap"), img = $("photoPreview");
+      if(wrap && img){ img.src = state.photoData; wrap.style.display = "block"; }
+    };
+    reader.readAsDataURL(file);
+  };
   $("latInput").oninput = e=> state.lat = e.target.value;
   $("lngInput").oninput = e=> state.lng = e.target.value;
   const gpsBtn = $("gpsBtn");
@@ -503,7 +531,8 @@ function wireField(){
     const rec = {
       ts: Date.now(), corridor: state.corridor, module: state.module, moduleLabel: MODULES[state.module].label,
       location: state.location, surveyor: state.surveyor, condition: state.condition, lat: state.lat, lng: state.lng,
-      measurementBasis: state.measurementBasis,
+      measurementBasis: state.measurementBasis, timesObserved: state.timesObserved,
+      photoData: state.photoData, photoName: state.photoName,
       problem: {...state.problem}, causes:[...state.causes], causeOther: state.causeOther,
       solutions:[...state.solutions], solutionNote: state.solutionNote, costTier: state.costTier, feasibilityNotes: state.feasibilityNotes,
       baseline: state.baseline, target: state.target, unit: state.unit, timeframe: state.timeframe,
@@ -580,6 +609,22 @@ async function renderSupervisor(){
       ${Object.keys(byCorridor).length? Object.entries(byCorridor).map(([c,n])=>`<div class="brow"><div class="bname">${esc(c)}</div><div class="btrack"><div class="bfill" style="width:${n/maxCorr*100}%;background:var(--orange);"></div></div><div class="bnum">${n}</div></div>`).join("") : "<div style='font-size:12px;color:#8a8171;'>No records yet.</div>"}
     </div></div>
 
+    <div class="card"><div class="head">Corridor synthesis</div><div class="body">
+      ${Object.keys(byCorridor).length? Object.keys(byCorridor).map(c=>{
+        const es = entries.filter(e=>e.corridor===c);
+        const mods = [...new Set(es.map(e=>e.moduleLabel))];
+        const causes = [...new Set(es.flatMap(e=>e.causes||[]))];
+        const solutions = [...new Set(es.flatMap(e=>e.solutions||[]))];
+        const comp = es.filter(e=>e.complete).length;
+        return `<div class="rec" style="margin-bottom:8px;">
+          <div class="top"><span class="mod">${esc(c)}</span><span class="flag ${comp===es.length?"ok":""}">${comp}/${es.length} complete</span></div>
+          <div class="meta"><b>Observed:</b> ${mods.join(", ")||"—"}</div>
+          <div class="meta"><b>Causes found:</b> ${causes.join(", ")||"—"}</div>
+          <div class="meta"><b>Solutions proposed:</b> ${solutions.join(", ")||"—"}</div>
+        </div>`;
+      }).join("") : "<div style='font-size:12px;color:#8a8171;'>No records yet.</div>"}
+    </div></div>
+
     <div class="card">
       <div class="head">Records <span style="margin-left:auto;font-weight:400;text-transform:none;letter-spacing:0;">${entries.length}</span></div>
       <div class="body">
@@ -604,13 +649,14 @@ async function renderSupervisor(){
       <div class="rec">
         <div class="top"><span class="mod">${e.moduleLabel}</span><span class="flag ${e.complete?"ok":""}">${e.complete?"Complete":"Incomplete"}</span></div>
         <div class="meta">${esc(e.corridor)} · ${esc(e.location)} · ${new Date(e.ts).toLocaleString()} · ${esc(e.surveyor)}</div>
+        <div class="meta">${e.timesObserved? `Observed ~${esc(e.timesObserved)}x/6mo · `:""}${e.measurementBasis? esc(e.measurementBasis):""}${e.photoUrl? ` · <a href="${esc(e.photoUrl)}" target="_blank" rel="noopener">📷 photo</a>`:""}</div>
       </div>`).join("") : "<div style='font-size:12px;color:#8a8171;'>No matching records.</div>";
   }
   draw();
   ["fMod","fCorr","fFlag"].forEach(id=> document.getElementById(id).onchange = draw);
 
   document.getElementById("exportBtn").onclick = ()=>{
-    const cols = ["ts","corridor","module","location","surveyor","condition","lat","lng","problem","causes","causeOther","solutions","solutionNote","baseline","target","unit","timeframe","complete"];
+    const cols = ["ts","corridor","module","location","surveyor","condition","measurementBasis","timesObserved","lat","lng","problem","causes","causeOther","solutions","solutionNote","costTier","feasibilityNotes","baseline","target","unit","timeframe","complete","photoUrl"];
     const rows = [cols.join(",")];
     entries.forEach(e=>{
       const row = cols.map(c=>{
